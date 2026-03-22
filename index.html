@@ -2,103 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App (Full Stack)</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon" />
-    <title>Weather App</title>
   </head>
   <body>
-    <div class="container">
-      <div class="current-info">
-        <div class="date-container">
-          <div class="time" id="time">12:30 <span id="am-pm">PM</span></div>
-          <div class="date" id="date">Monday, 25 May</div>
+    <main class="app">
+      <header>
+        <h1>Weather App</h1>
+        <p>Full-stack weather dashboard powered by your own backend API.</p>
+      </header>
 
-          <div class="others" id="current-weather-items"></div>
+      <section class="controls">
+        <form id="search-form">
+          <input
+            id="city-input"
+            type="text"
+            placeholder="Search city (e.g. London)"
+            required
+          />
+          <button type="submit">Search</button>
+          <button type="button" id="current-location-btn">Use My Location</button>
+        </form>
+        <p id="status" class="status"></p>
+      </section>
+
+      <section id="weather-card" class="weather-card hidden">
+        <div class="card-top">
+          <h2 id="location-name"></h2>
+          <p id="weather-main"></p>
         </div>
 
-        <div class="place-container">
-          <div class="time-zone" id="time-zone">Asia/Kolkata</div>
-          <div id="country" class="country">IN</div>
+        <div class="card-main">
+          <div class="temp-block">
+            <p id="temperature" class="temperature"></p>
+            <p id="feels-like"></p>
+          </div>
+          <img id="icon" alt="Weather icon" />
         </div>
-      </div>
-    </div>
 
-    <div class="future-forecast">
-      <div class="today" id="current-temp">
-        <img
-          src="http://openweathermap.org/img/wn/10d@2x.png"
-          alt="weather icon"
-          class="w-icon"
-        />
-        <div class="other">
-          <div class="day">Monday</div>
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
+        <div class="details-grid">
+          <div><span>Humidity</span><strong id="humidity"></strong></div>
+          <div><span>Wind</span><strong id="wind"></strong></div>
+          <div><span>Pressure</span><strong id="pressure"></strong></div>
+          <div><span>Visibility</span><strong id="visibility"></strong></div>
         </div>
-      </div>
 
-      <div class="weather-forecast" id="weather-forecast">
-        <div class="weather-forecast-item">
-          <div class="day">Tue</div>
-          <img
-            src="http://openweathermap.org/img/wn/10d@2x.png"
-            alt="weather icon"
-            class="w-icon"
-          />
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
-        </div>
-        <div class="weather-forecast-item">
-          <div class="day">Wed</div>
-          <img
-            src="http://openweathermap.org/img/wn/10d@2x.png"
-            alt="weather icon"
-            class="w-icon"
-          />
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
-        </div>
-        <div class="weather-forecast-item">
-          <div class="day">Thur</div>
-          <img
-            src="http://openweathermap.org/img/wn/10d@2x.png"
-            alt="weather icon"
-            class="w-icon"
-          />
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
-        </div>
-        <div class="weather-forecast-item">
-          <div class="day">Fri</div>
-          <img
-            src="http://openweathermap.org/img/wn/10d@2x.png"
-            alt="weather icon"
-            class="w-icon"
-          />
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
-        </div>
-        <div class="weather-forecast-item">
-          <div class="day">Sat</div>
-          <img
-            src="http://openweathermap.org/img/wn/10d@2x.png"
-            alt="weather icon"
-            class="w-icon"
-          />
-          <div class="temp">Night - 25.6&#176; C</div>
-          <div class="temp">Day - 35.6&#176; C</div>
-        </div>
-      </div>
-    </div>
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
-      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+        <p id="updated-at" class="muted"></p>
+      </section>
+    </main>
 
     <script src="script.js"></script>
   </body>

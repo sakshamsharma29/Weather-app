@@ -1,136 +1,89 @@
-const timeEl = document.getElementById("time");
-const dateEl = document.getElementById("date");
-const currentWeatherItemsEl = document.getElementById("current-weather-items");
-const timezone = document.getElementById("time-zone");
-const countryEl = document.getElementById("country");
-const weatherForecastEl = document.getElementById("weather-forecast");
-const currentTempEl = document.getElementById("current-temp");
+const form = document.getElementById("search-form");
+const cityInput = document.getElementById("city-input");
+const currentLocationBtn = document.getElementById("current-location-btn");
+const statusEl = document.getElementById("status");
+const weatherCard = document.getElementById("weather-card");
 
-const days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const locationNameEl = document.getElementById("location-name");
+const weatherMainEl = document.getElementById("weather-main");
+const temperatureEl = document.getElementById("temperature");
+const feelsLikeEl = document.getElementById("feels-like");
+const iconEl = document.getElementById("icon");
+const humidityEl = document.getElementById("humidity");
+const windEl = document.getElementById("wind");
+const pressureEl = document.getElementById("pressure");
+const visibilityEl = document.getElementById("visibility");
+const updatedAtEl = document.getElementById("updated-at");
 
-const API_KEY = "49cc8c821cd2aff9af04c9f98c36eb74";
-
-setInterval(() => {
-  const time = new Date();
-  const month = time.getMonth();
-  const date = time.getDate();
-  const day = time.getDay();
-  const hour = time.getHours();
-  const hoursIn12HrFormat = hour >= 13 ? hour % 12 : hour;
-  const minutes = time.getMinutes();
-  const ampm = hour >= 12 ? "PM" : "AM";
-
-  timeEl.innerHTML =
-    (hoursIn12HrFormat < 10 ? "0" + hoursIn12HrFormat : hoursIn12HrFormat) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    " " +
-    `<span id="am-pm">${ampm}</span>`;
-
-  dateEl.innerHTML = days[day] + ", " + date + " " + months[month];
-}, 1000);
-
-getWeatherData();
-function getWeatherData() {
-  navigator.geolocation.getCurrentPosition((success) => {
-    let { latitude, longitude } = success.coords;
-
-    fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`,
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        showWeatherData(data);
-      });
-  });
+function setStatus(message = "") {
+  statusEl.textContent = message;
 }
 
-function showWeatherData(data) {
-  let { humidity, pressure, sunrise, sunset, wind_speed } = data.current;
+function renderWeather(data) {
+  const weather = data.weather?.[0] || {};
 
-  timezone.innerHTML = data.timezone;
-  countryEl.innerHTML = data.lat + "N " + data.lon + "E";
+  locationNameEl.textContent = `${data.name}, ${data.sys?.country || ""}`;
+  weatherMainEl.textContent = weather.description || "-";
+  temperatureEl.textContent = `${Math.round(data.main?.temp)}°C`;
+  feelsLikeEl.textContent = `Feels like ${Math.round(data.main?.feels_like)}°C`;
+  humidityEl.textContent = `${data.main?.humidity}%`;
+  windEl.textContent = `${data.wind?.speed} m/s`;
+  pressureEl.textContent = `${data.main?.pressure} hPa`;
+  visibilityEl.textContent = `${(data.visibility / 1000).toFixed(1)} km`;
 
-  currentWeatherItemsEl.innerHTML = `<div class="weather-item">
-        <div>Humidity</div>
-        <div>${humidity}%</div>
-    </div>
-    <div class="weather-item">
-        <div>Pressure</div>
-        <div>${pressure}</div>
-    </div>
-    <div class="weather-item">
-        <div>Wind Speed</div>
-        <div>${wind_speed}</div>
-    </div>
+  iconEl.src = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+  iconEl.alt = weather.main || "Weather icon";
 
-    <div class="weather-item">
-        <div>Sunrise</div>
-        <div>${window.moment(sunrise * 1000).format("HH:mm a")}</div>
-    </div>
-    <div class="weather-item">
-        <div>Sunset</div>
-        <div>${window.moment(sunset * 1000).format("HH:mm a")}</div>
-    </div>
-    
-    
-    `;
+  const now = new Date();
+  updatedAtEl.textContent = `Updated at ${now.toLocaleTimeString()}`;
 
-  let otherDayForcast = "";
-  data.daily.forEach((day, idx) => {
-    if (idx == 0) {
-      currentTempEl.innerHTML = `
-            <img src="http://openweathermap.org/img/wn//${
-              day.weather[0].icon
-            }@4x.png" alt="weather icon" class="w-icon">
-            <div class="other">
-                <div class="day">${window
-                  .moment(day.dt * 1000)
-                  .format("dddd")}</div>
-                <div class="temp">Night - ${day.temp.night}&#176;C</div>
-                <div class="temp">Day - ${day.temp.day}&#176;C</div>
-            </div>
-            
-            `;
-    } else {
-      otherDayForcast += `
-            <div class="weather-forecast-item">
-                <div class="day">${window
-                  .moment(day.dt * 1000)
-                  .format("ddd")}</div>
-                <img src="http://openweathermap.org/img/wn/${
-                  day.weather[0].icon
-                }@2x.png" alt="weather icon" class="w-icon">
-                <div class="temp">Night - ${day.temp.night}&#176;C</div>
-                <div class="temp">Day - ${day.temp.day}&#176;C</div>
-            </div>
-            
-            `;
+  weatherCard.classList.remove("hidden");
+}
+
+async function fetchWeather(query) {
+  setStatus("Loading weather...");
+
+  try {
+    const response = await fetch(`/api/weather?${new URLSearchParams(query)}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch weather");
     }
-  });
 
-  weatherForecastEl.innerHTML = otherDayForcast;
+    setStatus("");
+    renderWeather(data);
+  } catch (error) {
+    setStatus(error.message || "Something went wrong");
+  }
 }
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const city = cityInput.value.trim();
+  if (!city) {
+    return setStatus("Please enter a city name");
+  }
+
+  fetchWeather({ city });
+});
+
+currentLocationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    return setStatus("Geolocation is not supported by your browser");
+  }
+
+  setStatus("Getting your location...");
+
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      fetchWeather({ lat: coords.latitude, lon: coords.longitude });
+    },
+    () => {
+      setStatus("Unable to access your location");
+    },
+  );
+});
+
+fetchWeather({ city: "New York" });

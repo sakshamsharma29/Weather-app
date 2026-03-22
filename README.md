@@ -1,28 +1,65 @@
-# Weather-App
-Weather App is a web application created using HTML, CSS, and JavaScript. It leverages a weather API to provide real-time weather updates based on the user's current location. Additionally, the app offers a forecast for upcoming days, ensuring users stay prepared for changing weather conditions.
+# Full-Stack Weather App
 
-Features
-1.Location-based weather updates: The app utilizes the user's current location to fetch accurate and up-to-date weather information. It provides details such as temperature, humidity, wind speed, and conditions like sunny, cloudy, or rainy.
-2.Forecast for upcoming days: Users can access a multi-day forecast, enabling them to plan their activities based on expected weather conditions. The forecast includes temperature ranges and weather conditions for each day.
-3.User-friendly interface: Weather App offers an intuitive and visually appealing interface, making it easy for users to access weather information effortlessly. The design focuses on displaying the data in a clear and concise manner.
-4.Responsive design: The app is built using responsive design principles, ensuring a seamless experience across various devices, including desktops, tablets, and mobile phones.
+A full-stack weather application with:
 
-How to Use:
-1.Clone this repository to your local machine.
-2.Open the index.html file in your preferred web browser.
-3.Grant the app permission to access your location when prompted.
-4.The app will display the current weather for your location.
-5.Scroll down to view the forecast for upcoming days.
-6.Stay informed about the weather and plan your activities accordingly!
+- **Backend**: Node.js + Express API that securely calls OpenWeather.
+- **Frontend**: HTML/CSS/JavaScript UI that fetches weather from the backend.
 
+## Features
 
-Technologies Used:
-HTML: Used for creating the structure and layout of the web pages.
-CSS: Used for styling and visual enhancements, providing an appealing user interface.
-JavaScript: Used to fetch weather data from the API, handle user location, and dynamically update the content based on the received data.
-Weather API: The app integrates with a weather API to retrieve accurate and real-time weather information.
+- Search weather by city
+- Use browser geolocation
+- Server-side API key handling (not exposed in frontend JS)
+- Health check endpoint
 
-Contributions:
-Contributions to this project are welcome! If you encounter any issues, have suggestions for improvements, or want to add new features, please feel free to open an issue or submit a pull request. Let's make Weather App even better together!
+## Tech Stack
 
-Enjoy using Weather App to stay updated on weather conditions and plan your days accordingly! Your feedback and contributions are highly appreciated. If you have any questions or need further assistance, please don't hesitate to reach out.
+- Node.js
+- Express
+- Vanilla JavaScript
+- OpenWeather API
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create environment file:
+
+```bash
+cp .env.example .env
+```
+
+3. Add your OpenWeather API key to `.env`:
+
+```env
+OPENWEATHER_API_KEY=your_key_here
+PORT=3000
+```
+
+4. Start the app:
+
+```bash
+npm start
+```
+
+5. Open:
+
+- http://localhost:3000
+- Health check: http://localhost:3000/api/health
+
+## API
+
+### `GET /api/weather`
+
+Query options:
+
+- `?city=London`
+- `?lat=12.97&lon=77.59`
+
+### `GET /api/health`
+
+Returns server health status.
